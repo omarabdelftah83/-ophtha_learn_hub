@@ -136,14 +136,14 @@ class MainWidget{
   }
 
   static showCurrencyDialog() async {
-    
+
     TextEditingController searchController = TextEditingController();
     FocusNode searchNode = FocusNode();
 
     List<CurrencyModel> searchList = PublicData.currencyListData.toList();
 
     return await showDialog(
-      context: navigatorKey.currentContext!, 
+      context: navigatorKey.currentContext!,
       builder: (context) {
         return Dialog(
           backgroundColor: Colors.transparent,
@@ -164,19 +164,19 @@ class MainWidget{
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                
+
                           space(19),
-                
+
                           Text(
                             appText.selectACurrency,
                             style: style16Bold(),
                           ),
-                          
+
                           space(16),
 
                           Center(
                             child: input(searchController, searchNode, appText.searchACurrency,iconPathLeft: AppAssets.searchSvg, isBorder: true, radius: 15,onChange: (text) {
-                                    
+
                               if(text.trim().isEmpty){
                                 searchList = PublicData.currencyListData.toList();
                               }else{
@@ -187,14 +187,14 @@ class MainWidget{
                                   }
                                 });
                               }
-                                    
+
                               state((){});
-                                    
+
                             },),
                           ),
-          
+
                           space(24),
-          
+
                           // country list
                           SizedBox(
                             width: getSize().width,
@@ -205,11 +205,11 @@ class MainWidget{
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   onTap: () async {
-          
+
                                     await AppData.saveCurrency(searchList[index].currency ?? '');
                                     CurrencyUtils.userCurrency = await AppData.getCurrency();
 
-                                    
+
                                     locator<AppLanguageProvider>().changeState();
 
                                     navigatorKey.currentState!.pop(searchList[index]);
@@ -219,10 +219,10 @@ class MainWidget{
                                     padding: padding(horizontal: 12),
                                     margin: const EdgeInsets.only(bottom: 24),
                                     width: getSize().height,
-          
+
                                     child: Row(
                                       children: [
-          
+
                                         Container(
                                           width: 25,
                                           height: 25,
@@ -236,42 +236,42 @@ class MainWidget{
                                             style: style12Regular(),
                                           ),
                                         ),
-          
+
                                         space(0,width: 14),
-          
+
                                         Expanded(
                                           child: Text(
                                             searchList[index].currency ?? '',
                                             style: style14Regular(),
                                           ),
                                         )
-          
-          
+
+
                                       ],
                                     ),
                                   ),
                                 );
-          
+
                               },
                             ),
                           ),
-          
+
                           space(25),
-          
+
                           button(
                             onTap: (){
                               backRoute();
-                            }, 
-                            width: getSize().width, 
-                            height: 52, 
-                            text: appText.cancel, 
+                            },
+                            width: getSize().width,
+                            height: 52,
+                            text: appText.cancel,
                             bgColor: mainColor(),
-                            textColor: Colors.white, 
+                            textColor: Colors.white,
                             borderColor: mainColor()
                           ),
-          
+
                           space(11),
-          
+
                         ],
                       );
                     }
@@ -284,6 +284,117 @@ class MainWidget{
       },
     );
   }
+  // static Future<CurrencyModel?> showCurrencyDialog() async {
+  //   String currentCurrency = CurrencyUtils.userCurrency;
+  //
+  //   return await showDialog<CurrencyModel>(
+  //     context: navigatorKey.currentContext!,
+  //     builder: (context) {
+  //       return Dialog(
+  //         backgroundColor: Colors.transparent,
+  //         insetPadding: padding(horizontal: 25),
+  //         child: directionality(
+  //           child: StatefulBuilder(
+  //             builder: (context, state) {
+  //               return Container(
+  //                 width: getSize().width,
+  //                 padding: padding(horizontal: 12),
+  //                 decoration: BoxDecoration(
+  //                   color: Colors.white,
+  //                   borderRadius: borderRadius(radius: 25),
+  //                 ),
+  //                 child: Column(
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   mainAxisSize: MainAxisSize.min,
+  //                   children: [
+  //                     space(24),
+  //
+  //                     // عرض العملة الحالية فقط
+  //                     GestureDetector(
+  //                       onTap: () async {
+  //                         // حفظ العملة المختارة
+  //                         await AppData.saveCurrency(currentCurrency);
+  //                         CurrencyUtils.userCurrency = await AppData.getCurrency();
+  //
+  //                         locator<AppLanguageProvider>().changeState();
+  //
+  //                         CurrencyModel selectedCurrency = CurrencyModel(
+  //                           currency: currentCurrency,
+  //                         );
+  //
+  //                         navigatorKey.currentState!.pop(selectedCurrency);
+  //                       },
+  //                       behavior: HitTestBehavior.opaque,
+  //                       child: Container(
+  //                         padding: padding(horizontal: 12),
+  //                         margin: const EdgeInsets.only(bottom: 24),
+  //                         width: getSize().height,
+  //                         decoration: BoxDecoration(
+  //                           color: mainColor(),
+  //                           borderRadius: borderRadius(radius: 10),
+  //                         ),
+  //                         child: Row(
+  //                           children: [
+  //                             // رمز العملة
+  //                             Container(
+  //                               width: 25,
+  //                               height: 25,
+  //                               alignment: Alignment.center,
+  //                               decoration: BoxDecoration(
+  //                                 color: Colors.white.withOpacity(0.2),
+  //                                 borderRadius: borderRadius(radius: 5),
+  //                               ),
+  //                               child: Text(
+  //                                 CurrencyUtils.getSymbol(currentCurrency),
+  //                                 style: style12Regular().copyWith(
+  //                                   color: Colors.white,
+  //                                   height: 1,
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                             space(0, width: 14),
+  //
+  //                             // اسم العملة
+  //                             Expanded(
+  //                               child: Text(
+  //                                 currentCurrency,
+  //                                 style: style14Regular().copyWith(
+  //                                   color: Colors.white,
+  //                                   height: 1,
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                     ),
+  //
+  //                     space(25),
+  //
+  //                     // زر العودة
+  //                     button(
+  //                       onTap: () {
+  //                         navigatorKey.currentState!.pop();
+  //                       },
+  //                       width: getSize().width,
+  //                       height: 52,
+  //                       text: appText.cancel,
+  //                       bgColor: mainColor(),
+  //                       textColor: Colors.white,
+  //                       borderColor: mainColor(),
+  //                     ),
+  //
+  //                     space(11),
+  //                   ],
+  //                 ),
+  //               );
+  //             },
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   static showExitDialog() async {
 

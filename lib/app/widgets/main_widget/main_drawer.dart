@@ -27,7 +27,8 @@ import 'package:webinar/common/utils/currency_utils.dart';
 import 'package:webinar/config/assets.dart';
 import 'package:webinar/config/styles.dart';
 import 'package:webinar/locator.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import '../../../common/utils/object_instance.dart';
 import '../../pages/main_page/home_page/comments_page/comments_page.dart';
 import '../../pages/main_page/home_page/dashboard_page/dashboard_page.dart';
@@ -56,7 +57,7 @@ class _MainDrawerState extends State<MainDrawer> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await CurrencyUtils.fetchCurrencyBasedOnLocation();
-      setState(() {}); // تحديث الـ UI بعد تحميل العملة
+      setState(() {});
     });
   }
 
@@ -424,12 +425,37 @@ class _MainDrawerState extends State<MainDrawer> {
                         ),
 
                         space(12),
-
-                        // currency
-                        Text(
-                          CurrencyUtils.userCurrency,
-                          style: style12Regular().copyWith(color: Colors.white),
-                        ),
+                        GestureDetector(
+                          onTap: (){
+                            MainWidget.showCurrencyDialog();
+                          },
+                          behavior: HitTestBehavior.opaque,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 21,
+                                height: 21,
+                                decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(.2),
+                                    borderRadius: borderRadius(radius: 5)
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  CurrencyUtils.getSymbol(CurrencyUtils.userCurrency),
+                                  style: style12Regular().copyWith(color: Colors.white,height: 1),
+                                ),
+                              ),
+                              space(0,width: 6),
+                              Text(
+                                CurrencyUtils.userCurrency,
+                                style: style12Regular().copyWith(color: Colors.white),
+                              ),
+                              space(0,width: 6),
+                              Icon(Icons.keyboard_arrow_down_rounded, color: Colors.white.withOpacity(.6)),
+                            ],
+                          ),
+                        )
 
 
 
@@ -489,32 +515,5 @@ class _MainDrawerState extends State<MainDrawer> {
   }
 }
 
-class CurrencyUtils {
-  static String userCurrency = "USD"; // قيمة افتراضية
 
-  static Future<void> fetchCurrencyBasedOnLocation() async {
-    try {
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
 
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude, position.longitude,
-      );
-
-      if (placemarks.isNotEmpty) {
-        String countryCode = placemarks.first.isoCountryCode ?? "US";
-        String currency = NumberFormat.simpleCurrency(locale: 'en_$countryCode').currencyName ?? "USD";
-
-        userCurrency = currency;
-        print("تم تحديث العملة: $userCurrency");
-      }
-    } catch (e) {
-      print("خطأ في تحديد العملة: $e");
-    }
-  }
-
-  static String getSymbol(String currencyCode) {
-    return NumberFormat.simpleCurrency(name: currencyCode).currencySymbol;
-  }
-}

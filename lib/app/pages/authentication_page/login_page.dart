@@ -19,6 +19,7 @@ import 'package:webinar/common/common.dart';
 import 'package:webinar/common/data/api_public_data.dart';
 import 'package:webinar/common/enums/page_name_enum.dart';
 import 'package:webinar/common/utils/constants.dart';
+import 'package:webinar/common/utils/currency_utils.dart';
 import 'package:webinar/locator.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -499,21 +500,19 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> getLocation() async {
     LocationPermission permission = await Geolocator.requestPermission();
 
-    if (permission == LocationPermission.always ||
-        permission == LocationPermission.whileInUse) {
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+    if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
+      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
       print('Latitude: ${position.latitude}, Longitude: ${position.longitude}');
 
+      // جلب العملة بناءً على الموقع
       await CurrencyUtils.fetchCurrencyBasedOnLocation();
-      setState(() {});
 
+      setState(() {}); // تحديث الواجهة
     } else {
       print('Location permission is denied');
     }
   }
-
 
 
   socialWidget(String icon, Function onTap) {
